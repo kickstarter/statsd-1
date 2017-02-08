@@ -287,7 +287,7 @@ class Statsd
   def postfix=(pf)
     case pf
     when nil, false, '' then @postfix = nil
-    else @postfix = ".#{pf}"
+    else @postfix = "#{@delimiter}#{pf}"
     end
   end
 
