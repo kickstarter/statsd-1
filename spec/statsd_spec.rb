@@ -285,6 +285,42 @@ describe Statsd do
     end
   end
 
+  describe "with tags" do
+    before { @statsd.tags = 'service=api,env=test,host=local' }
+
+    it "should add tags to increment" do
+      @statsd.increment('foobar')
+      @socket.recv.must_equal ['foobar,service=api,env=test,host=local:1|c']
+    end
+
+    it "should add tags to decrement" do
+      @statsd.decrement('foobar')
+      @socket.recv.must_equal ['foobar,service=api,env=test,host=local:-1|c']
+    end
+
+    it "should add namespace to timing" do
+      @statsd.timing('foobar', 500)
+      @socket.recv.must_equal ['foobar,service=api,env=test,host=local:500|ms']
+    end
+
+    it "should add namespace to gauge" do
+      @statsd.gauge('foobar', 500)
+      @socket.recv.must_equal ['foobar,service=api,env=test,host=local:500|g']
+    end
+  end
+
+  describe '#tags=' do
+    describe "when nil, false, or empty" do
+      it "should set tags to nil" do
+        [nil, false, ''].each do |value|
+          @statsd.tags = 'a tags'
+          @statsd.tags = value
+          @statsd.tags.must_equal nil
+        end
+      end
+    end
+  end
+
   describe "with logging" do
     require 'stringio'
     before { Statsd.logger = Logger.new(@log = StringIO.new)}

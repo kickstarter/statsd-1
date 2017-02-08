@@ -51,6 +51,7 @@ class Statsd
       :port, :port=,
       :prefix,
       :postfix,
+      :tags,
       :delimiter, :delimiter=
 
     attr_accessor :batch_size
@@ -250,6 +251,9 @@ class Statsd
   # a postfix to append to all metrics
   attr_reader :postfix
 
+  # a tags to append to all metrics
+  attr_reader :tags
+
   # The replacement of :: on ruby module names when transformed to statsd metric names
   attr_reader :delimiter
 
@@ -268,6 +272,7 @@ class Statsd
     @prefix = nil
     @batch_size = 10
     @postfix = nil
+    @tags = nil
     @socket = nil
     @protocol = protocol || :udp
     @s_mu = Mutex.new
@@ -287,9 +292,19 @@ class Statsd
   def postfix=(pf)
     case pf
     when nil, false, '' then @postfix = nil
-    else @postfix = "#{@delimiter}#{pf}"
+    else @postfix = ".#{pf}"
     end
   end
+
+  # @attribute [w] postfix
+  #   A value to be appended to the stat name after a '.'. If the value is
+  #   blank then the postfix will be reset to nil (rather than to '.').
+  def tags=(tgs)
+    case tgs
+    when nil, false, '' then @tags = nil
+    else @tags = ",#{tgs}"
+    end
+  end  
 
   # @attribute [w] host
   #   Writes are not thread safe.
@@ -467,7 +482,7 @@ class Statsd
       # Replace Ruby module scoping with '.' and reserved chars (: | @) with underscores.
       stat = stat.to_s.gsub('::', delimiter).tr(':|@', '_')
       rate = "|@#{sample_rate}" unless sample_rate == 1
-      send_to_socket "#{prefix}#{stat}#{postfix}:#{delta}|#{type}#{rate}"
+      send_to_socket "#{prefix}#{stat}#{postfix}#{tags}:#{delta}|#{type}#{rate}"
     end
   end
 
