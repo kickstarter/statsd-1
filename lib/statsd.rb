@@ -304,7 +304,7 @@ class Statsd
     when nil, false, '' then @tags = nil
     else @tags = ",#{tgs}"
     end
-  end  
+  end
 
   # @attribute [w] host
   #   Writes are not thread safe.
@@ -394,6 +394,18 @@ class Statsd
   # @param [Numeric] sample_rate sample rate, 1 for always
   def timing(stat, ms, sample_rate=1)
     send_stats stat, ms, :ms, sample_rate
+  end
+
+  # Sends a integer as a value for the given stat to the statsd server. The
+  # sample_rate determines what percentage of the time this report is sent. The
+  # statsd server then uses the sample_rate to correctly track the average
+  # timing for the stat.
+  #
+  # @param [String] stat stat name
+  # @param [Integer] value metric value, as integer
+  # @param [Numeric] sample_rate sample rate, 1 for always
+  def histogram(stat, value, sample_rate=1)
+    send_stats stat, value, :h, sample_rate
   end
 
   # Reports execution time of the provided block using {#timing}.

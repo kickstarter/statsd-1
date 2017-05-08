@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
 
-Gem::Specification.new("statsd-ruby", "1.3.0") do |s|
-  s.authors = ["Rein Henrichs"]
-  s.email = "reinh@reinh.com"
+Gem::Specification.new("statsd-ruby", "1.4.0") do |s|
+  s.authors = ["Logan Mcdonald", "Kyle Burckhard", "Rein Henrichs"]
+  s.email = "devops@kickstarter.com"
 
   s.summary = "A Ruby StatsD client"
   s.description = "A Ruby StatsD client (https://github.com/etsy/statsd)"
 
-  s.homepage = "https://github.com/reinh/statsd"
-  s.licenses = %w[MIT]
+  s.homepage = "https://github.com/kickstarter/statsd-1"
+  # s.licenses = %w[MIT]
 
   s.extra_rdoc_files = %w[LICENSE.txt README.rdoc]
 
@@ -22,4 +22,3 @@ Gem::Specification.new("statsd-ruby", "1.3.0") do |s|
   s.add_development_dependency "simplecov", ">= 0.6.4"
   s.add_development_dependency "rake"
 end
-

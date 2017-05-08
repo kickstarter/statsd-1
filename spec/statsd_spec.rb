@@ -70,12 +70,12 @@ describe Statsd do
     end
   end
 
-  describe "#delimiter" do 
+  describe "#delimiter" do
     it "should set delimiter" do
       @statsd.delimiter = "-"
       @statsd.delimiter.must_equal "-"
     end
-    
+
     it "should set default to period if not given a value" do
       @statsd.delimiter = nil
       @statsd.delimiter.must_equal "."
@@ -140,6 +140,21 @@ describe Statsd do
       it "should format the message according to the statsd spec" do
         @statsd.timing('foobar', 500, 0.5)
         @socket.recv.must_equal ['foobar:500|ms|@0.5']
+      end
+    end
+  end
+
+  describe "#histogram" do
+    it "should format the message according to the statsd spec" do
+      @statsd.histogram('foobar', 500)
+      @socket.recv.must_equal ['foobar:500|h']
+    end
+
+    describe "with a sample rate" do
+      before { class << @statsd; def rand; 0; end; end } # ensure delivery
+      it "should format the message according to the statsd spec" do
+        @statsd.histogram('foobar', 500, 0.5)
+        @socket.recv.must_equal ['foobar:500|h|@0.5']
       end
     end
   end
