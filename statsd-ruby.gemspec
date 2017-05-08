@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 
-Gem::Specification.new("statsd-ruby", "1.4.0") do |s|
+Gem::Specification.new("statsd-ruby", "1.3.0.ksr2") do |s|
   s.authors = ["Logan Mcdonald", "Kyle Burckhard", "Rein Henrichs"]
   s.email = "devops@kickstarter.com"
 
